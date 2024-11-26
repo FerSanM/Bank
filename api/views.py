@@ -35,12 +35,12 @@ class APIListView(APIView):
 
     def get(self, request):
         apis = [
-            {'id': 1, 'name': 'ITAU', 'url': 'http://127.0.0.1:8000/api/celestial/report/ | http://127.0.0.1:8000/api/user/balance/ '},
-            {'id': 2, 'name': 'UENO', 'url': 'http://127.0.0.1:8000/api/celestial/report/ | http://127.0.0.1:8000/api/user/balance/ '},
-            {'id': 3, 'name': 'BANCO FAMILIAR', 'url': 'http://127.0.0.1:8000/api/celestial/report/ | http://127.0.0.1:8000/api/user/balance/ '},
-            {'id': 4, 'name': 'BANCO CONTINENTAL', 'url': 'http://127.0.0.1:8000/api/celestial/report/ | http://127.0.0.1:8000/api/user/balance/ '},
-            {'id': 5, 'name': 'ATLAS', 'url': 'http://127.0.0.1:8000/api/celestial/report/ | http://127.0.0.1:8000/api/user/balance/ '},
-            {'id': 6, 'name': 'BNF', 'url': 'http://127.0.0.1:8000/api/celestial/report/ | http://127.0.0.1:8000/api/user/balance/ '},
+            {'id': 1, 'name': 'ITAU', 'url': 'http://192.168.1.9:8000/api/celestial/report/ | http://192.168.1.9:8000/api/user/balance/ '},
+            {'id': 2, 'name': 'UENO', 'url': 'http://192.168.1.14:8000/api/celestial/report/ | http://192.168.1.14:8000/api/user/balance/ '},
+            {'id': 3, 'name': 'BANCO FAMILIAR', 'url': 'http://172.16.7.232:8000/api/celestial/report/ | http://172.16.7.232:8000/api/user/balance/ '},
+            {'id': 4, 'name': 'BANCO CONTINENTAL', 'url': 'http://172.16.6.146:8000/api/celestial/report/ | http://172.16.6.146:8000/api/user/balance/ '},
+            {'id': 5, 'name': 'ATLAS', 'url': 'http://172.16.7.217/api/celestial:8000/report/ | http://172.16.7.217:8000/api/user/balance/ '},
+            {'id': 6, 'name': 'BNF', 'url': 'http://172.16.7.227/api/celestial:8000/report/ | http://172.16.7.227:8000/api/user/balance/ '},
         ]
         return Response(apis)
 

@@ -1,6 +1,5 @@
 {% extends 'core/base.html' %} {% block head_title %}{{ title }}{% endblock %}
 {% block content %}
-
 <div class="w-full flex mt-5 justify-center">
   <div class="bg-white w-5/12">
     <!-- Modal HTML -->
@@ -18,7 +17,7 @@
     </div>
 
     <h1 class="font-mono font-bold text-3xl text-center pb-5 pt-10 px-5">
-      {{ title }}
+      {{ title }} {{ request.user.account.idBank }}
     </h1>
     <hr />
     <!-- transactions/transaction_form.html -->
@@ -30,12 +29,16 @@
     >
       {% csrf_token %}
 
-      <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="id_api">
+      <!--<div class="mb-4">
+        <label
+          id="entityLabel"
+          class="block text-gray-700 text-sm font-bold mb-2"
+          for="id_api"
+        >
           Selecciona una entidad
         </label>
         <select id="id_api"></select>
-      </div>
+      </div>-->
 
       <input
         type="hidden"
@@ -85,26 +88,37 @@
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-  $(document).ready(function () {
-    $.getJSON("/api/api-list/", function (data) {
+  /*$(document).ready(function () {
+    if ("{{ form.transaction_type.value }}" === "1") {
+      console.log("deposito");
       var select = $("#id_api");
-      $.each(data, function (index, item) {
-        var url = item.url.split(" | ")[0];
-        select.append('<option value="' + url + '">' + item.name + "</option>");
+      var label = $("#entityLabel");
+      select.css("display", "none");
+      label.css("display", "none");
+    } else {
+      console.log("retirar");
+      $.getJSON("/api/api-list/", function (data) {
+        var select = $("#id_api");
+        $.each(data, function (index, item) {
+          var url = item.url.split(" | ")[0];
+          select.append(
+            '<option value="' + url + '">' + item.name + "</option>"
+          );
+        });
+        updateAction();
       });
-      updateAction();
-    });
 
-    $("#id_api").change(function () {
-      updateAction();
-    });
+      $("#id_api").change(function () {
+        updateAction();
+      });
 
-    $("#depositForm").submit(function (e) {
-      e.preventDefault();
-      updateAction();
-      submitForm();
-    });
-  });
+      $("#depositForm").submit(function (e) {
+        e.preventDefault();
+        updateAction();
+        submitForm();
+      });
+    }
+  });*/
 
   function updateAction() {
     var select = document.getElementById("id_api");
@@ -208,30 +222,32 @@
   }
 
   async function submitForm() {
-    var selectedValue = $("#id_api").val();
-    var isFirstOptionSelected =
-      selectedValue === $("#id_api option:first").val();
-    if (!isFirstOptionSelected) {
-      showModal();
-    } else {
-      var form = document.getElementById("depositForm");
-      var formData = new FormData(form);
+    try {
+      // Reemplazar $.getJSON por fetch
+      const response = await fetch("/api/api-list/");
+      if (!response.ok) {
+        throw new Error("Error al obtener la lista de APIs.");
+      }
+      const data = await response.json();
+      
+      const searchBank = data.find(bank => bank.name === '{{ request.user.account.idBank }}'.toLocaleUpperCase())
+      const url = searchBank.url.split(" | ")[0];
+      const name = data[0].name.split(" | ")[0];
 
-      var select = $("#id_api");
-      var selectedOption = select.find("option:first");
-      var selectedOptionName = selectedOption.text();
+      const form = document.getElementById("depositForm");
+      const formData = new FormData(form);
 
-      var origin = document.location.origin;
-      var required = selectedOptionName;
+      const origin = document.location.origin;
+      const required = name;
 
       formData.set("origin", origin);
       formData.set("required", required);
 
       // Obtener el token de acceso desde las cookies
-      var accessToken = getCookie("access_token");
+      const accessToken = getCookie("access_token");
 
       // Verificar si el token está vencido
-      var isExpired = isTokenExpired(accessToken);
+      const isExpired = isTokenExpired(accessToken);
       if (isExpired) {
         document.getElementById("error-message").innerText =
           "Error: El token ha expirado";
@@ -239,29 +255,28 @@
       }
 
       // Agregar el token de acceso a los encabezados
-      var headers = new Headers();
+      const headers = new Headers();
       headers.append("Authorization", "Bearer " + accessToken);
 
-      try {
-        // Enviar la solicitud con los encabezados
-        const response = await fetch(form.action, {
-          method: form.method,
-          body: formData,
-          headers: headers,
-        });
+      // Enviar la solicitud con los encabezados
+      const submitResponse = await fetch(url, {
+        method: form.method,
+        body: formData,
+        headers: headers,
+      });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData[0]);
-        } else {
-          window.location.href = "/transactions/report/";
-        }
-      } catch (error) {
-        document.getElementById("error-message").innerText =
-          "Error: " + error.message;
+      if (!submitResponse.ok) {
+        const errorData = await submitResponse.json();
+        throw new Error(errorData[0]);
+      } else {
+        window.location.href = "/transactions/report/";
       }
+    } catch (error) {
+      document.getElementById("error-message").innerText =
+        "Error: " + error.message;
     }
-  }
+}
+
 
   function getCookie(name) {
     var value = "; " + document.cookie;

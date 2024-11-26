@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HOME</title>
+    <link
+      href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="w-100 flex-col text-center mt-64">
+        <h3 class="text-xl">
+            Bienvenido
+            <span class="font-bold text-md text-orange-600"
+              >{{ user.first_name }} {{ user.last_name }}</span
+            >
+            al Cajero de Itaú Bank
+          </h3>
+          <a class="hover:text-orange-600 hover:font-bold" href="{% url 'accounts:user_logout' %}">Cerrar sesión</a>
+    </div>
+  </body>
+</html>

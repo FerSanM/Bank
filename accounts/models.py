@@ -57,7 +57,13 @@ class BankAccountType(models.Model):
         interest = (p * (1 + ((r/100) / n))) - p
 
         return round(interest, 2)
+#Bancos disponibles 
+class Banks(models.Model):
+    bank = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.bank
+    
 #Cuenta bancaria de un usuario
 class UserBankAccount(models.Model):
     user = models.OneToOneField(
@@ -84,6 +90,7 @@ class UserBankAccount(models.Model):
         'El número del mes desde el que comenzará el cálculo de intereses.')
     )
     initial_deposit_date = models.DateField(null=True, blank=True)
+    idBank = models.ForeignKey(Banks, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return str(self.account_no)
@@ -112,3 +119,5 @@ class UserAddress(models.Model):
 
     def __str__(self):
         return self.user.email
+    
+

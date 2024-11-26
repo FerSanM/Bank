@@ -1,14 +1,21 @@
+from django.http import HttpResponse
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib import messages
 from core.models import Auditoria
+from .models import UserBankAccount
 from uuid import getnode as get_mac
 from django.views.generic import TemplateView, RedirectView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .forms import UserRegistrationForm, UserAddressForm
 from django.urls import reverse_lazy
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+import requests
 User = get_user_model()
 
 
@@ -100,7 +107,7 @@ class UserLoginView(LoginView):
 
 
 class LogoutView(RedirectView):
-    pattern_name = 'home'
+    pattern_name = 'login'
 
     def get_redirect_url(self, *args, **kwargs):
         if self.request.user.is_authenticated:

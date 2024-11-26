@@ -19,8 +19,6 @@ def login(request):
 
     token, created = Token.objects.get_or_create(user=user)
     serializer = UserSerializers(instance=user)
-
-
     return Response({"token": token.key, "user": serializer.data}, status=status.HTTP_200_OK)
 
 

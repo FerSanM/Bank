@@ -37,6 +37,7 @@ LOGIN_REDIRECT_URL = '/transactions/report'
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -51,9 +52,12 @@ INSTALLED_APPS = [
     'core',
     'accounts',
     'transactions',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -63,7 +67,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'accounts.middleware.TokenExpiryMiddleware',
 ]
-CORS_ALLOW_ALL_ORIGINS=True
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:8000",
+    "http://192.168.1.9:8000",
+    "http://192.168.1.14:8000",
+    "http://localhost:8000"
+]
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'banksystem.urls'
 AUTH_USER_MODEL = 'accounts.User'
